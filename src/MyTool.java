@@ -158,7 +158,7 @@ public class MyTool {
                 System.out.println("请输入人员的身份证号码和姓名: ");
                 String personId = scanner.nextLine();
                 String personName = scanner.nextLine();
-                URL url = Test.class.getClassLoader().getResource("baseinfo.txt");
+                URL url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
                 File file = new File(url.getFile());
                 FileWriter fileWriter = new FileWriter(file, "GBK");
                 fileWriter.append(personId + " " + personName + "\r\n");
@@ -178,12 +178,12 @@ public class MyTool {
                     father = tree.searchId(fatherId);
                     if (father != null) {
                         tree.insertSonNode(father, childId, childName, null);
-                        url = Test.class.getClassLoader().getResource("baseinfo.txt");
+                        url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
                         file = new File(url.getFile());
                         fileWriter = new FileWriter(file, "GBK");
                         fileWriter.append(childId + " " + childName + "\r\n");
                         MyTool.changeNum("baseinfo.txt");
-                        url = Test.class.getClassLoader().getResource("childinfo.txt");
+                        url = MyTool.class.getClassLoader().getResource("childinfo.txt");
                         file = new File(url.getFile());
                         fileWriter = new FileWriter(file, "GBK");
                         if (father.getSonCount() == 0) {
@@ -193,8 +193,9 @@ public class MyTool {
                             FileReader fileReader = new FileReader(file);
                             String childinfoContent = fileReader.readString();
                             String findContent = ReUtil.findAll("^" + fatherId, childinfoContent, 0).get(0);
-                            ReUtil.replaceAll(childinfoContent, findContent, findContent + " " + childId);
-                            childinfos = MyTool.readChildinfo();
+                            childinfoContent = ReUtil.replaceAll(childinfoContent, findContent,
+                                    findContent + " " + childId);
+                            fileWriter.write(childinfoContent);
                         }
                         System.out.println("新生孩子插入成功.");
                     } else {
@@ -235,7 +236,7 @@ public class MyTool {
                 TreeNode man = tree.searchId(brideId);
                 if (marriedMan == null && bridegroom != null && man == null && brideName != null) {
                     bridegroom.setSpouse(new Spouse(brideId, brideName));
-                    url = Test.class.getClassLoader().getResource("marriageinfo.txt");
+                    url = MyTool.class.getClassLoader().getResource("marriageinfo.txt");
                     file = new File(url.getFile());
                     fileWriter = new FileWriter(file, "GBK");
                     fileWriter.append(bridegroom.getId() + " " + brideId + "\r\n");
