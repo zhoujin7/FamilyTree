@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Java JDK VM 1.8.0_151-b12 Windows"/>
+	<classpathentry kind="lib" path="lib/hutool-all-4.1.1.jar" sourcepath="C:/Users/jin7/AppData/Local/Temp/.org.sf.feeling.decompiler1531269647245/source/hutool-all-4.1.1-sources-1531276162353.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
