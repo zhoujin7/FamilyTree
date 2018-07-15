@@ -13,6 +13,7 @@ import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.core.util.ReUtil;
 
 public class MyTool {
+    // 读取baseinfo.txt文件信息, 保存为Map结构
     public static Map<String, String> readBaseinfo() {
         URL url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
         File file = new File(url.getFile());
@@ -30,7 +31,9 @@ public class MyTool {
         return baseinfos;
     }
 
+    // 读取childinfo.txt文件信息, 保存为List结构
     public static List<Map<String, List<String>>> readChildinfo() {
+
         URL url = MyTool.class.getClassLoader().getResource("childinfo.txt");
         File file = new File(url.getFile());
         FileReader fileReader = new FileReader(file, "GBK");
@@ -53,6 +56,7 @@ public class MyTool {
         return childinfos;
     }
 
+    // 读取marriageinfo.txt文件信息, 保存为Map结构
     public static Map<String, String> readMarriageinfo() {
         URL url = MyTool.class.getClassLoader().getResource("marriageinfo.txt");
         File file = new File(url.getFile());
@@ -70,6 +74,7 @@ public class MyTool {
         return marriageinfos;
     }
 
+    // 改变文件行首的数字, 如果文件行数变了, 就给数值加一
     public static void changeNum(String fileName) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
@@ -83,33 +88,53 @@ public class MyTool {
         fileWriter.writeLines(contentList);
     }
 
-    public static SonBrotherTree createFamilyTree(Map<String, String> baseinfos, Map<String, String> marriageinfos,
+    // 创建家谱树
+    // 创建家谱树分为两步, 第一步创建根结点和根结点的孩子, 第二步创建根节点孩子的子孙
+    public static ChildSiblingTree createFamilyTree(Map<String, String> baseinfos, Map<String, String> marriageinfos,
             List<Map<String, List<String>>> childinfos) {
-        SonBrotherTree tree = null;
+
+        // 第一步创建根结点和根结点的孩子
+        ChildSiblingTree tree = null;
+        // 从childinfos中获取第一个Map元素rootNodeInfo, 也就是childinfo.txt的第二行信息
         Map<String, List<String>> rootNodeInfo = childinfos.get(0);
         Set<Entry<String, List<String>>> entrySet = rootNodeInfo.entrySet();
+        // 遍历rootNodeInfo这个Map
         for (Entry<String, List<String>> e : entrySet) {
+            // e.getKey()是根节点的id
+            // 从baseinfos这个Map里面取出根节点的名字 name
             String name = baseinfos.get(e.getKey());
+            // 从marriageinfos这个Map里面取出根节点的配偶信息
             String spouseId = marriageinfos.get(e.getKey());
             String spouseName = "";
             Spouse spouse = null;
             if (spouseId != null && !spouseId.equals("")) {
+                // 从baseinfos这个Map里面取出配偶的名字
                 spouseName = baseinfos.get(spouseId);
+                // 创建一个新的配偶对象
                 spouse = new Spouse(spouseId, spouseName);
             }
-            tree = new SonBrotherTree(e.getKey(), name, spouse);
+            // 创建家谱树, 目前还只有树根的根节点和根节点的配偶
+            tree = new ChildSiblingTree(e.getKey(), name, spouse);
+            // e.getValue()是根节点的孩子id列表
             for (String id : e.getValue()) {
+                // 从baseinfos这个Map里面取出孩子的名字
                 name = baseinfos.get(id);
-                spouseId = marriageinfos.get(e.getKey());
+                // 从marriageinfos这个Map里面取出孩子的配偶id
+                spouseId = marriageinfos.get(id);
                 spouse = null;
                 if (spouseId != null && !spouseId.equals("")) {
+                    // 从baseinfos这个Map里面取出孩子的配偶的名字
                     spouseName = baseinfos.get(spouseId);
+                    // 创建一个新的配偶对象
                     spouse = new Spouse(spouseId, spouseName);
                 }
-                tree.insertSonNode(tree.getRoot(), id, name, spouse);
+                // 给根节点插入他的孩子
+                tree.insertChildNode(tree.getRoot(), id, name, spouse);
             }
         }
 
+        // 第二步创建根节点孩子的子孙
+        // 跳过对根节点及他直接孩子结点的处理, 就是跳过childinfos这个List的第一个元素
         int i = 0;
         for (Map<String, List<String>> childinfo : childinfos) {
             if (i > 0) {
@@ -127,7 +152,7 @@ public class MyTool {
                             spouse = new Spouse(spouseId, spouseName);
                         }
                         father.setSpouse(spouse);
-                        tree.insertSonNode(father, id, name, null);
+                        tree.insertChildNode(father, id, name, null);
                     }
                 }
             }
@@ -136,119 +161,155 @@ public class MyTool {
         return tree;
     }
 
-    public static void console(SonBrotherTree tree, Map<String, String> baseinfos, Map<String, String> marriageinfos,
+    public static void console(ChildSiblingTree tree, Map<String, String> baseinfos, Map<String, String> marriageinfos,
             List<Map<String, List<String>>> childinfos) {
-        for (;;) {
-            System.out.println();
-            System.out.println("请选择所要进行的操作: ");
-            System.out.println("0 人员信息的录入");
-            System.out.println("1 新生孩子的插入");
-            System.out.println("2 第几代查询");
-            System.out.println("3 父母亲查询");
-            System.out.println("4 孩子查询");
-            System.out.println("5 祖先查询");
-            System.out.println("6 结婚信息插入");
-            System.out.println();
-            Scanner scanner = new Scanner(System.in);
-            int selectedNum = scanner.nextInt();
-            scanner.nextLine();
-            String id = "";
-            switch (selectedNum) {
-            case 0:
-                System.out.println("请输入人员的身份证号码和姓名: ");
-                String personId = scanner.nextLine();
-                String personName = scanner.nextLine();
-                URL url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
-                File file = new File(url.getFile());
-                FileWriter fileWriter = new FileWriter(file, "GBK");
-                fileWriter.append(personId + " " + personName + "\r\n");
-                baseinfos.put(personId, personName);
-                MyTool.changeNum("baseinfo.txt");
-                System.out.println("人员信息录入成功!");
-                break;
-            case 1:
-                System.out.println("请输入父亲的身份证号码: ");
-                String fatherId = scanner.nextLine();
-                System.out.println("请输入孩子的身份证号码和姓名: ");
-                String childId = scanner.nextLine();
-                String childName = scanner.nextLine();
-                TreeNode father = null;
-                if (fatherId != null && !fatherId.equals("") && childId != null && !childId.equals("")
-                        && childName != null && !childName.equals("")) {
-                    father = tree.searchId(fatherId);
-                    if (father != null) {
-                        tree.insertSonNode(father, childId, childName, null);
-                        url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
-                        file = new File(url.getFile());
-                        fileWriter = new FileWriter(file, "GBK");
-                        fileWriter.append(childId + " " + childName + "\r\n");
-                        MyTool.changeNum("baseinfo.txt");
-                        url = MyTool.class.getClassLoader().getResource("childinfo.txt");
-                        file = new File(url.getFile());
-                        fileWriter = new FileWriter(file, "GBK");
-                        if (father.getSonCount() == 0) {
-                            fileWriter.append(fatherId + " " + childId + "\r\n");
-                            MyTool.changeNum("childinfo.txt");
+        Scanner scanner = new Scanner(System.in);
+        for (int i = 0, j = 0; i == 0;) {
+            if (j != 0) {
+                System.out.println("请按回车键继续...");
+                scanner.nextLine();
+                j = 0;
+            }
+            if (j == 0) {
+                System.out.println();
+                System.out.println("请选择所要进行的操作: ");
+                System.out.println("0 人员信息的录入");
+                System.out.println("1 新生孩子的插入");
+                System.out.println("2 第几代查询");
+                System.out.println("3 父母亲查询");
+                System.out.println("4 孩子查询");
+                System.out.println("5 祖先查询");
+                System.out.println("6 结婚信息插入");
+                System.out.println("7 查看结构化文件信息");
+                System.out.println("8 退出系统");
+                System.out.println();
+
+                int selectedNum = scanner.nextInt();
+                scanner.nextLine();
+                String id = "";
+                switch (selectedNum) {
+                case 0:
+                    System.out.println("请输入人员的身份证号码: ");
+                    String personId = scanner.nextLine();
+                    System.out.println("请输入人员的姓名: ");
+                    String personName = scanner.nextLine();
+                    URL url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
+                    File file = new File(url.getFile());
+                    FileWriter fileWriter = new FileWriter(file, "GBK");
+                    fileWriter.append(personId + " " + personName + "\r\n");
+                    baseinfos.put(personId, personName);
+                    MyTool.changeNum("baseinfo.txt");
+                    System.out.println("人员信息录入成功!");
+                    j = -1;
+                    break;
+                case 1:
+                    System.out.println("请输入父亲的身份证号码: ");
+                    String fatherId = scanner.nextLine();
+                    System.out.println("请输入孩子的身份证号码: ");
+                    String childId = scanner.nextLine();
+                    System.out.println("请输入孩子的姓名: ");
+                    String childName = scanner.nextLine();
+                    TreeNode father = null;
+                    if (fatherId != null && !fatherId.equals("") && childId != null && !childId.equals("")
+                            && childName != null && !childName.equals("")) {
+                        father = tree.searchId(fatherId);
+                        if (father != null) {
+                            tree.insertChildNode(father, childId, childName, null);
+                            url = MyTool.class.getClassLoader().getResource("baseinfo.txt");
+                            file = new File(url.getFile());
+                            fileWriter = new FileWriter(file, "GBK");
+                            fileWriter.append(childId + " " + childName + "\r\n");
+                            MyTool.changeNum("baseinfo.txt");
+                            url = MyTool.class.getClassLoader().getResource("childinfo.txt");
+                            file = new File(url.getFile());
+                            fileWriter = new FileWriter(file, "GBK");
+                            if (father.getDirectChildCount() == 0) {
+                                fileWriter.append(fatherId + " " + childId + "\r\n");
+                                MyTool.changeNum("childinfo.txt");
+                            } else {
+                                FileReader fileReader = new FileReader(file);
+                                String childinfoContent = fileReader.readString();
+                                String findContent = ReUtil.findAll("^" + fatherId, childinfoContent, 0).get(0);
+                                childinfoContent = ReUtil.replaceAll(childinfoContent, findContent,
+                                        findContent + " " + childId);
+                                fileWriter.write(childinfoContent);
+                            }
+                            System.out.println("新生孩子插入成功.");
                         } else {
-                            FileReader fileReader = new FileReader(file);
-                            String childinfoContent = fileReader.readString();
-                            String findContent = ReUtil.findAll("^" + fatherId, childinfoContent, 0).get(0);
-                            childinfoContent = ReUtil.replaceAll(childinfoContent, findContent,
-                                    findContent + " " + childId);
-                            fileWriter.write(childinfoContent);
+                            System.out.println("父亲不存在, 请检查身份证号码是否输入有误.");
                         }
-                        System.out.println("新生孩子插入成功.");
                     } else {
-                        System.out.println("父亲不存在, 请检查身份证号码是否输入有误.");
+                        System.out.println("新生孩子插入失败.");
                     }
-                } else {
-                    System.out.println("新生孩子插入失败.");
+                    j = -1;
+                    break;
+                case 2:
+                    System.out.println("请输入身份证号码: ");
+                    id = scanner.nextLine();
+                    tree.findGeneration(id);
+                    j = -1;
+                    break;
+                case 3:
+                    System.out.println("请输入身份证号码: ");
+                    id = scanner.nextLine();
+                    tree.findParent(id);
+                    j = -1;
+                    break;
+                case 4:
+                    System.out.println("请输入身份证号码: ");
+                    id = scanner.nextLine();
+                    tree.findChildren(id);
+                    j = -1;
+                    break;
+                case 5:
+                    System.out.println("请输入身份证号码: ");
+                    id = scanner.nextLine();
+                    tree.findAncestors(id);
+                    j = -1;
+                    break;
+                case 6:
+                    System.out.println("请输入新郎的身份证号码: ");
+                    String bridegroomId = scanner.nextLine();
+                    System.out.println("请输入新娘的身份证号码: ");
+                    String brideId = scanner.nextLine();
+                    String brideName = baseinfos.get(brideId);
+                    String marriedMan = marriageinfos.get(bridegroomId);
+                    TreeNode bridegroom = tree.searchId(bridegroomId);
+                    TreeNode man = tree.searchId(brideId);
+                    if (marriedMan == null && bridegroom != null && man == null && brideName != null) {
+                        bridegroom.setSpouse(new Spouse(brideId, brideName));
+                        url = MyTool.class.getClassLoader().getResource("marriageinfo.txt");
+                        file = new File(url.getFile());
+                        fileWriter = new FileWriter(file, "GBK");
+                        fileWriter.append(bridegroom.getId() + " " + brideId + "\r\n");
+                        marriageinfos.put(bridegroom.getId(), brideId);
+                        MyTool.changeNum("marriageinfo.txt");
+                        System.out.println(bridegroom.getName() + "和" + brideName + "结婚了.");
+                    } else {
+                        System.out.println("结婚失败.");
+                    }
+                    j = -1;
+                    break;
+                case 7:
+                    System.out.println("开始读取文件...");
+                    baseinfos = MyTool.readBaseinfo();
+                    marriageinfos = MyTool.readMarriageinfo();
+                    childinfos = MyTool.readChildinfo();
+                    System.out.println("baseinfo.txt文件的结构化内容是:");
+                    System.out.println(baseinfos);
+                    System.out.println("childinfo.txt文件的结构化内容是:");
+                    System.out.println(childinfos);
+                    System.out.println("marriageinfo.txt文件的结构化内容是:");
+                    System.out.println(marriageinfos);
+                    System.out.println("读取文件完毕.");
+                    j = -1;
+                    break;
+                case 8:
+                    i = -1;
+                    break;
+                default:
+                    break;
                 }
-                break;
-            case 2:
-                System.out.println("请输入身份证号码: ");
-                id = scanner.nextLine();
-                tree.findGeneration(id);
-                break;
-            case 3:
-                System.out.println("请输入身份证号码: ");
-                id = scanner.nextLine();
-                tree.findParent(id);
-                break;
-            case 4:
-                System.out.println("请输入身份证号码: ");
-                id = scanner.nextLine();
-                tree.findChildren(id);
-                break;
-            case 5:
-                System.out.println("请输入身份证号码: ");
-                id = scanner.nextLine();
-                tree.findAncestors(id);
-                break;
-            case 6:
-                System.out.println("请输入新郎的身份证号码: ");
-                String bridegroomId = scanner.nextLine();
-                System.out.println("请输入新娘的身份证号码: ");
-                String brideId = scanner.nextLine();
-                String brideName = baseinfos.get(brideId);
-                String marriedMan = marriageinfos.get(bridegroomId);
-                TreeNode bridegroom = tree.searchId(bridegroomId);
-                TreeNode man = tree.searchId(brideId);
-                if (marriedMan == null && bridegroom != null && man == null && brideName != null) {
-                    bridegroom.setSpouse(new Spouse(brideId, brideName));
-                    url = MyTool.class.getClassLoader().getResource("marriageinfo.txt");
-                    file = new File(url.getFile());
-                    fileWriter = new FileWriter(file, "GBK");
-                    fileWriter.append(bridegroom.getId() + " " + brideId + "\r\n");
-                    marriageinfos.put(bridegroom.getId(), brideId);
-                    MyTool.changeNum("marriageinfo.txt");
-                    System.out.println(bridegroom.getName() + "和" + brideName + "结婚了.");
-                } else {
-                    System.out.println(bridegroom.getName() + "和" + brideName + "结婚失败.");
-                }
-                break;
-            default:
-                break;
             }
         }
     }

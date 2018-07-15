@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +17,7 @@ public class Test {
         System.out.println("读取文件完毕.");
 
         System.out.println("开始创建族谱结构...");
-        SonBrotherTree tree = MyTool.createFamilyTree(baseinfos, marriageinfos, childinfos);
+        ChildSiblingTree tree = MyTool.createFamilyTree(baseinfos, marriageinfos, childinfos);
         System.out.println("创建族谱结构完毕.");
 
         MyTool.console(tree, baseinfos, marriageinfos, childinfos);
