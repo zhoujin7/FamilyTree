@@ -27,25 +27,21 @@ public class TreeNode {
         }
     }
 
+    public TreeNode getChildNode() {
+        return this.childNode;
+    }
+
     // 以下是set和get方法用来操作属性值
     public void setChildNode(TreeNode childNode) {
         this.childNode = childNode;
     }
 
-    public void setSiblingNode(TreeNode siblingNode) {
-        this.siblingNode = siblingNode;
-    }
-
-    public void setSpouse(Spouse spouse) {
-        this.spouse = spouse;
-    }
-
-    public TreeNode getChildNode() {
-        return this.childNode;
-    }
-
     public TreeNode getSiblingNode() {
         return siblingNode;
+    }
+
+    public void setSiblingNode(TreeNode siblingNode) {
+        this.siblingNode = siblingNode;
     }
 
     public String getId() {
@@ -62,6 +58,10 @@ public class TreeNode {
 
     public Spouse getSpouse() {
         return spouse;
+    }
+
+    public void setSpouse(Spouse spouse) {
+        this.spouse = spouse;
     }
 
     public int getDirectChildCount() {

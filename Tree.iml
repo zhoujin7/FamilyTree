@@ -14,16 +14,5 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
-    <orderEntry type="module-library">
-      <library name="hutool-all-4.1.1.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/hutool-all-4.1.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$USER_HOME$/AppData/Local/Temp/.org.sf.feeling.decompiler1531269647245/source/hutool-all-4.1.1-sources-1531276162353.jar" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>
