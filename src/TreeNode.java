@@ -64,6 +64,10 @@ public class TreeNode {
         this.spouse = spouse;
     }
 
+    public void setDirectChildCount() {
+        ++this.directChildCount;
+    }
+
     public int getDirectChildCount() {
         return directChildCount;
     }

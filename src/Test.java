@@ -3,7 +3,6 @@ import java.util.Map;
 
 public class Test {
     public static void main(String[] args) {
-
         System.out.println("开始读取文件...");
         Map<String, String> baseinfos = MyTool.readBaseinfo();
         Map<String, String> marriageinfos = MyTool.readMarriageinfo();

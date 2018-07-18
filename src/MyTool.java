@@ -1,7 +1,5 @@
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MyTool {
     // 读取baseinfo.txt文件信息, 保存为Map结构
@@ -170,7 +168,7 @@ public class MyTool {
                         String personId = scanner.nextLine();
                         System.out.println("请输入人员的姓名: ");
                         String personName = scanner.nextLine();
-                        FileTool.append("baseinfo.txt", personId + " " + personName + FileTool.getNewLine());
+                        FileTool.append("baseinfo.txt", personId + " " + personName);
                         baseinfos.put(personId, personName);
                         MyTool.changeNum("baseinfo.txt");
                         System.out.println("人员信息录入成功!");
@@ -189,19 +187,22 @@ public class MyTool {
                             father = tree.searchId(fatherId);
                             if (father != null) {
                                 tree.insertChildNode(father, childId, childName, null);
-                                FileTool.append("baseinfo.txt", childId + " " + childName + FileTool.getNewLine());
+                                FileTool.append("baseinfo.txt", childId + " " + childName);
                                 MyTool.changeNum("baseinfo.txt");
                                 if (father.getDirectChildCount() == 0) {
-                                    FileTool.append("childinfo.txt", fatherId + " " + childId + FileTool.getNewLine());
+                                    FileTool.append("childinfo.txt", fatherId + " " + childId);
                                     MyTool.changeNum("childinfo.txt");
+                                    father.setDirectChildCount();
                                 } else {
-                                    String childinfoContent = FileTool.readString("childinfo.txt");
-                                    String regex = "^" + fatherId + " .*";
-                                    Pattern pattern = Pattern.compile(regex);
-                                    Matcher matcher = pattern.matcher(childinfoContent);
-                                    String findContent = matcher.group(0);
-                                    childinfoContent.replaceAll(findContent, findContent + " " + childId);
-                                    FileTool.append("childinfo.txt", childinfoContent);
+                                    List<String> childinfoLines = FileTool.readLines("childinfo.txt");
+                                    StringBuilder sb = new StringBuilder();
+                                    String regex = "^" + fatherId;
+                                    for (String childinfoLine : childinfoLines) {
+                                        childinfoLine = childinfoLine.replaceAll(regex, "$0 " + childId);
+                                        sb.append(childinfoLine + FileTool.getNewLine());
+                                    }
+                                    FileTool.write("childinfo.txt", sb.toString());
+                                    father.setDirectChildCount();
                                 }
                                 System.out.println("新生孩子插入成功.");
                             } else {
@@ -247,7 +248,7 @@ public class MyTool {
                         TreeNode man = tree.searchId(brideId);
                         if (marriedMan == null && bridegroom != null && man == null && brideName != null) {
                             bridegroom.setSpouse(new Spouse(brideId, brideName));
-                            FileTool.append("marriageinfo.txt", bridegroom.getId() + " " + brideId + FileTool.getNewLine());
+                            FileTool.append("marriageinfo.txt", bridegroom.getId() + " " + brideId);
                             marriageinfos.put(bridegroom.getId(), brideId);
                             MyTool.changeNum("marriageinfo.txt");
                             System.out.println(bridegroom.getName() + "和" + brideName + "结婚了.");
