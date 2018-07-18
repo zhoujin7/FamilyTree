@@ -196,7 +196,7 @@ public class MyTool {
                                     MyTool.changeNum("childinfo.txt");
                                 } else {
                                     String childinfoContent = FileTool.readString("childinfo.txt");
-                                    String regex = "^" + fatherId + ".*";
+                                    String regex = "^" + fatherId + " .*";
                                     Pattern pattern = Pattern.compile(regex);
                                     Matcher matcher = pattern.matcher(childinfoContent);
                                     String findContent = matcher.group(0);

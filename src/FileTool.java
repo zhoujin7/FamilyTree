@@ -43,8 +43,10 @@ public class FileTool {
     }
 
     public static void writeLines(String fileName, List<String> lines) {
+        URL url = MyTool.class.getClassLoader().getResource(fileName);
+        File file = new File(url.getFile());
         try (OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(
-                fileName), "GBK")) {
+                file), "GBK")) {
             StringBuilder sb = new StringBuilder();
             for (String line : lines) {
                 sb.append(line + FileTool.getNewLine());
@@ -57,8 +59,10 @@ public class FileTool {
     }
 
     public static void append(String fileName, String content) {
+        URL url = MyTool.class.getClassLoader().getResource(fileName);
+        File file = new File(url.getFile());
         try (OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(
-                fileName), "GBK")) {
+                file), "GBK")) {
             fw.append(content + FileTool.getNewLine());
         } catch (Exception e) {
             System.out.println(e.getMessage());
