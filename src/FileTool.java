@@ -27,11 +27,11 @@ public class FileTool {
             System.out.println(e.getMessage());
         } finally {
             try {
-                if (fr != null) {
-                    fr.close();
-                }
                 if (br != null) {
                     br.close();
+                }
+                if (fr != null) {
+                    fr.close();
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

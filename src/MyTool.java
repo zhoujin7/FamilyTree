@@ -105,6 +105,7 @@ public class MyTool {
                 }
                 // 给根节点插入他的孩子
                 tree.insertChildNode(tree.getRoot(), id, name, spouse);
+                tree.getRoot().setDirectChildCount();
             }
         }
 
@@ -128,6 +129,7 @@ public class MyTool {
                         }
                         father.setSpouse(spouse);
                         tree.insertChildNode(father, id, name, null);
+                        father.setDirectChildCount();
                     }
                 }
             }
@@ -185,7 +187,7 @@ public class MyTool {
                         if (fatherId != null && !fatherId.equals("") && childId != null && !childId.equals("")
                                 && childName != null && !childName.equals("")) {
                             father = tree.searchId(fatherId);
-                            if (father != null) {
+                            if (father != null && father.getSpouse() != null) {
                                 tree.insertChildNode(father, childId, childName, null);
                                 FileTool.append("baseinfo.txt", childId + " " + childName);
                                 MyTool.changeNum("baseinfo.txt");
@@ -205,8 +207,10 @@ public class MyTool {
                                     father.setDirectChildCount();
                                 }
                                 System.out.println("新生孩子插入成功.");
-                            } else {
+                            } else if (father == null) {
                                 System.out.println("父亲不存在, 请检查身份证号码是否输入有误.");
+                            } else {
+                                System.out.println("该男子还没结婚, 请先结婚再生小孩.");
                             }
                         } else {
                             System.out.println("新生孩子插入失败.");

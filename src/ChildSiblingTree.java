@@ -24,7 +24,6 @@ public class ChildSiblingTree {
             currentChildNode.setSiblingNode(prevChildNode);
         }
         father.setChildNode(currentChildNode);
-        father.setDirectChildCount();
         return currentChildNode;
     }
 
