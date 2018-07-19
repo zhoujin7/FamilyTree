@@ -22,9 +22,6 @@ public class TreeNode {
         this.name = name;
         this.father = father;
         this.spouse = spouse;
-        if (childNode != null) {
-            directChildCount++;
-        }
     }
 
     public TreeNode getChildNode() {

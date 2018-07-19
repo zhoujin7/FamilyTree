@@ -13,15 +13,30 @@ public class FileTool {
     public static List<String> readLines(String fileName) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
-        List<String> lines = new ArrayList<>();
-        try (Reader fr = new InputStreamReader(new FileInputStream(file), "GBK")) {
-            BufferedReader br = new BufferedReader(fr);
+        List<String> lines = new ArrayList<String>();
+        Reader fr = null;
+        BufferedReader br = null;
+        try {
+            fr = new InputStreamReader(new FileInputStream(file), "GBK");
+            br = new BufferedReader(fr);
             String line;
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (fr != null) {
+                    fr.close();
+                }
+                if (br != null) {
+                    br.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
         }
         return lines;
     }
@@ -29,8 +44,10 @@ public class FileTool {
     public static void writeLines(String fileName, List<String> lines) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
-        try (OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(
-                file), "GBK")) {
+        OutputStreamWriter fw = null;
+        try {
+            fw = new OutputStreamWriter(new FileOutputStream(
+                    file), "GBK");
             StringBuilder sb = new StringBuilder();
             for (String line : lines) {
                 sb.append(line + FileTool.getNewLine());
@@ -38,17 +55,35 @@ public class FileTool {
             fw.write(sb.toString());
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     private static void write(String fileName, String content, boolean isAppend) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
-        try (OutputStreamWriter fw = new OutputStreamWriter(new FileOutputStream(
-                file, isAppend), "GBK")) {
+        OutputStreamWriter fw = null;
+        try {
+            fw = new OutputStreamWriter(new FileOutputStream(
+                    file, isAppend), "GBK");
             fw.append(content + FileTool.getNewLine());
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (fw != null) {
+                    fw.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 

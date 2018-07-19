@@ -24,6 +24,7 @@ public class ChildSiblingTree {
             currentChildNode.setSiblingNode(prevChildNode);
         }
         father.setChildNode(currentChildNode);
+        father.setDirectChildCount();
         return currentChildNode;
     }
 
@@ -91,7 +92,6 @@ public class ChildSiblingTree {
         } else {
             System.out.println("身份证号码有误, 请检查!");
         }
-
         System.out.println();
     }
 
