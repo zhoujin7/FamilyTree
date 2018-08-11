@@ -1,3 +1,6 @@
+package com.zhoujin7;
+
+//树的结点
 public class TreeNode {
     // 最左的孩子节点
     private TreeNode childNode;

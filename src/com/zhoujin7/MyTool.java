@@ -1,3 +1,5 @@
+package com.zhoujin7;
+
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -138,6 +140,7 @@ public class MyTool {
         return tree;
     }
 
+    //输入和输出
     public static void console(ChildSiblingTree tree, Map<String, String> baseinfos, Map<String, String> marriageinfos,
                                List<Map<String, List<String>>> childinfos) {
         Scanner scanner = new Scanner(System.in);

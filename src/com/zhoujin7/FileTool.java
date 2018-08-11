@@ -1,15 +1,21 @@
+package com.zhoujin7;
+
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+//文件工具 要处理的文件都是GBK编码
 public class FileTool {
+    //换行符
     private static String newLine = System.getProperty("line.separator");
 
+    //获取换行符
     public static String getNewLine() {
         return newLine;
     }
 
+    //读取文件每行, 保存为List<String>, List的每个元素就是一行
     public static List<String> readLines(String fileName) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
@@ -41,6 +47,7 @@ public class FileTool {
         return lines;
     }
 
+    //将List<String>写入文件, List的每个元素就是一行
     public static void writeLines(String fileName, List<String> lines) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
@@ -66,6 +73,7 @@ public class FileTool {
         }
     }
 
+    //写文件方法, isAppend表示内容是否为追加
     private static void write(String fileName, String content, boolean isAppend) {
         URL url = MyTool.class.getClassLoader().getResource(fileName);
         File file = new File(url.getFile());
@@ -87,10 +95,12 @@ public class FileTool {
         }
     }
 
+    //写文件方法, 覆盖以前的内容
     public static void write(String fileName, String content) {
         write(fileName, content, false);
     }
 
+    //写文件方法, 新的内容追加到以后内容的后面
     public static void append(String fileName, String content) {
         write(fileName, content, true);
     }

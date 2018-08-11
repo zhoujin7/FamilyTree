@@ -1,3 +1,6 @@
+package com.zhoujin7;
+
+//配偶
 class Spouse {
     private String id;
     private String name;
