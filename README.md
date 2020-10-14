@@ -71,6 +71,7 @@ childinfo.txt
 
 用左孩子右兄弟表示法表示的家谱树（二叉树）
 [![tree1](images/tree1.png)](images/tree1.png)
+
 以上两个图表示的信息是等价的。
 
 ### 代码的实现
@@ -78,6 +79,7 @@ childinfo.txt
 总共6个类。
 
 [![类](images/class.png)](images/class.png)
+
 运行界面截图
 
 [![运行界面截图](images/cli.png)](images/cli.png)
